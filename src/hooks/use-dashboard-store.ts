@@ -1,19 +1,19 @@
 import { create } from 'zustand';
 
 interface DashboardState {
+  language: 'ko' | 'en';
   filter: string | null;
   isSidebarOpen: boolean;
+  setLanguage: (lang: 'ko' | 'en') => void;
   setFilter: (filter: string | null) => void;
   toggleSidebar: () => void;
 }
 
-/**
- * Dashboard 전역 상태 관리 (Zustand)
- * 클라이언트 사이드 인터랙션을 위한 상태를 관리합니다.
- */
 export const useDashboardStore = create<DashboardState>((set) => ({
+  language: 'ko',
   filter: 'all',
   isSidebarOpen: true,
+  setLanguage: (language) => set({ language }),
   setFilter: (filter) => set({ filter }),
   toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 }));

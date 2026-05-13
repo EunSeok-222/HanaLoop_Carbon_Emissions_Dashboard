@@ -14,6 +14,8 @@ import {
 import { Line } from 'react-chartjs-2';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardData } from '@/lib/api';
+import { useDashboardStore } from "@/hooks/use-dashboard-store";
+import { translations } from "@/lib/translations";
 
 ChartJS.register(
   CategoryScale,
@@ -31,21 +33,29 @@ interface DashboardChartProps {
 }
 
 export default function DashboardChart({ data }: DashboardChartProps) {
+  const { language } = useDashboardStore();
+  const t = translations[language];
+
+  // 월 레이블 번역 맵
+  const monthLabels: Record<string, string> = {
+    '1월': t.jan, '2월': t.feb, '3월': t.mar, '4월': t.apr, '5월': t.may, '6월': t.jun
+  };
+
   const chartData = {
-    labels: data.map((item) => item.label),
+    labels: data.map((item) => monthLabels[item.label] || item.label),
     datasets: [
       {
-        label: 'Current Value',
+        label: t.currentValue,
         data: data.map((item) => item.value),
-        borderColor: 'rgb(59, 130, 246)', // Blue 500
+        borderColor: 'rgb(59, 130, 246)', 
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         fill: true,
         tension: 0.4,
       },
       {
-        label: 'Baseline',
+        label: t.baseline,
         data: data.map((item) => item.baseline),
-        borderColor: 'rgba(156, 163, 175, 0.5)', // Gray 400
+        borderColor: 'rgba(156, 163, 175, 0.5)', 
         borderDash: [5, 5],
         fill: false,
         tension: 0,
@@ -71,7 +81,7 @@ export default function DashboardChart({ data }: DashboardChartProps) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-lg font-bold">Activity Trends</CardTitle>
+        <CardTitle className="text-lg font-bold">{t.activityTrends}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[400px] w-full">
