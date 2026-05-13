@@ -2,25 +2,29 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Factory, 
-  FileText, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Factory,
+  FileText,
+  Settings,
   LogOut,
   Leaf
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const menuItems = [
-  { name: '대시보드', href: '/dashboard', icon: LayoutDashboard },
-  { name: '기업 관리', href: '/companies', icon: Factory },
-  { name: '리포트', href: '/reports', icon: FileText },
-  { name: '설정', href: '/settings', icon: Settings },
-];
+import { useDashboardStore } from '@/hooks/use-dashboard-store';
+import { translations } from '@/lib/translations';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { language } = useDashboardStore();
+  const t = translations[language];
+
+  const menuItems = [
+    { name: t.dashboard, href: '/dashboard', icon: LayoutDashboard },
+    { name: t.companies, href: '/companies', icon: Factory },
+    { name: t.reports, href: '/reports', icon: FileText },
+    { name: t.settings, href: '/settings', icon: Settings },
+  ];
 
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r bg-card transition-transform">
@@ -45,8 +49,8 @@ export default function Sidebar() {
                 href={item.href}
                 className={cn(
                   "flex items-center rounded-lg p-3 text-sm font-medium transition-colors hover:bg-accent",
-                  isActive 
-                    ? "bg-accent text-emerald-600" 
+                  isActive
+                    ? "bg-accent text-emerald-600"
                     : "text-muted-foreground"
                 )}
               >
@@ -61,7 +65,7 @@ export default function Sidebar() {
         <div className="mt-auto border-t pt-4">
           <button className="flex w-full items-center rounded-lg p-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-destructive">
             <LogOut className="mr-3 h-5 w-5" />
-            로그아웃
+            {t.logout}
           </button>
         </div>
       </div>

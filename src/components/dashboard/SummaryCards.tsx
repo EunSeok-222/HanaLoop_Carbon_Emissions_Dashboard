@@ -3,6 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, TrendingUp, TrendingDown, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useDashboardStore } from "@/hooks/use-dashboard-store";
+import { translations } from "@/lib/translations";
 
 interface SummaryCardsProps {
   data: {
@@ -14,29 +16,32 @@ interface SummaryCardsProps {
 }
 
 export default function SummaryCards({ data }: SummaryCardsProps) {
+  const { language } = useDashboardStore();
+  const t = translations[language];
+
   const isGrowth = data.growthRate > 0;
   const isDecline = data.growthRate < 0;
 
   const stats = [
     {
-      title: "당월 총 배출량",
+      title: t.summaryTotal,
       value: `${data.currentMonthTotal.toLocaleString()} tCO2eq`,
-      description: "이번 달 합산 배출량",
+      description: t.currentMonthDesc,
       icon: Leaf,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
     },
     {
-      title: "전월 대비 증감률",
+      title: t.summaryGrowth,
       value: `${Math.abs(data.growthRate)}%`,
-      description: isGrowth ? "전월 대비 상승" : isDecline ? "전월 대비 하락" : "전월과 동일",
+      description: isGrowth ? `${t.vsLastMonth} ${t.growthUp}` : isDecline ? `${t.vsLastMonth} ${t.growthDown}` : t.growthEqual,
       icon: isGrowth ? TrendingUp : TrendingDown,
       color: isGrowth ? "text-destructive" : isDecline ? "text-emerald-600" : "text-muted-foreground",
       bg: isGrowth ? "bg-red-50" : isDecline ? "bg-emerald-50" : "bg-slate-50",
       trend: true,
     },
     {
-      title: "최대 배출 Scope",
+      title: t.summaryMaxScope,
       value: data.mostEmittedScope.scope,
       description: `${data.mostEmittedScope.value.toLocaleString()} tCO2eq`,
       icon: Target,
@@ -44,9 +49,9 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
       bg: "bg-amber-50",
     },
     {
-      title: "누적 총 배출량",
+      title: t.summaryCumulative,
       value: `${data.totalEmissions.toLocaleString()} t`,
-      description: "연간 누적 배출 통계",
+      description: t.annualCumulative,
       icon: Zap,
       color: "text-blue-600",
       bg: "bg-blue-50",

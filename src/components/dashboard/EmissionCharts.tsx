@@ -12,6 +12,8 @@ import {
 } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useDashboardStore } from "@/hooks/use-dashboard-store";
+import { translations } from "@/lib/translations";
 
 ChartJS.register(
   CategoryScale,
@@ -29,12 +31,15 @@ interface EmissionChartsProps {
 }
 
 export default function EmissionCharts({ monthlyTrends, scopeBreakdown }: EmissionChartsProps) {
+  const { language } = useDashboardStore();
+  const t = translations[language];
+
   // Bar Chart Data
   const barData = {
     labels: monthlyTrends.map((t) => t.month),
     datasets: [
       {
-        label: '배출량 (tCO2eq)',
+        label: t.unitEmission,
         data: monthlyTrends.map((t) => t.emissions),
         backgroundColor: 'rgba(16, 185, 129, 0.7)',
         borderColor: 'rgb(16, 185, 129)',
@@ -51,9 +56,9 @@ export default function EmissionCharts({ monthlyTrends, scopeBreakdown }: Emissi
       {
         data: Object.values(scopeBreakdown),
         backgroundColor: [
-          'rgba(59, 130, 246, 0.8)', // Scope 1 - Blue
-          'rgba(245, 158, 11, 0.8)', // Scope 2 - Amber
-          'rgba(100, 116, 139, 0.8)', // Scope 3 - Slate
+          'rgba(59, 130, 246, 0.8)', // Scope 1
+          'rgba(245, 158, 11, 0.8)', // Scope 2
+          'rgba(100, 116, 139, 0.8)', // Scope 3
         ],
         hoverOffset: 4,
         borderWidth: 0,
@@ -78,10 +83,9 @@ export default function EmissionCharts({ monthlyTrends, scopeBreakdown }: Emissi
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {/* Monthly Trend Bar Chart */}
       <Card className="lg:col-span-2 border-none shadow-md ring-1 ring-border/50">
         <CardHeader>
-          <CardTitle className="text-lg font-bold">월별 탄소 배출량 추이</CardTitle>
+          <CardTitle className="text-lg font-bold">{t.chartTrendTitle}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[350px]">
@@ -99,10 +103,9 @@ export default function EmissionCharts({ monthlyTrends, scopeBreakdown }: Emissi
         </CardContent>
       </Card>
 
-      {/* Scope Proportion Doughnut Chart */}
       <Card className="border-none shadow-md ring-1 ring-border/50">
         <CardHeader>
-          <CardTitle className="text-lg font-bold">Scope별 배출 비중</CardTitle>
+          <CardTitle className="text-lg font-bold">{t.chartScopeTitle}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[350px] flex items-center justify-center">

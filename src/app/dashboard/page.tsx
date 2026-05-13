@@ -9,6 +9,8 @@ import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useDashboardStore } from "@/hooks/use-dashboard-store";
+import { translations } from "@/lib/translations";
 import {
   Select,
   SelectContent,
@@ -18,6 +20,9 @@ import {
 } from "@/components/ui/select";
 
 export default function DashboardPage() {
+  const { language } = useDashboardStore();
+  const t = translations[language];
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -40,11 +45,11 @@ export default function DashboardPage() {
       const data = await fetchDashboardAnalytics(companyId === "all" ? undefined : companyId);
       setDashboardData(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "데이터를 불러오는 중 오류가 발생했습니다.");
+      setError(err instanceof Error ? err.message : t.loadingData);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t.loadingData]);
 
   useEffect(() => {
     loadInitialData();
@@ -59,7 +64,7 @@ export default function DashboardPage() {
       <div className="flex flex-col items-center justify-center h-[60vh] space-y-6">
         <Alert variant="destructive" className="max-w-md shadow-lg">
           <AlertCircle className="h-5 w-5" />
-          <AlertTitle>오류 발생</AlertTitle>
+          <AlertTitle>{t.errorTitle}</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
         <Button 
@@ -68,7 +73,7 @@ export default function DashboardPage() {
           className="gap-2 transition-all hover:bg-accent"
         >
           <RefreshCcw className="h-4 w-4" />
-          다시 시도
+          {t.retry}
         </Button>
       </div>
     );
@@ -79,18 +84,18 @@ export default function DashboardPage() {
       {/* Header & Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">탄소 배출량 대시보드</h1>
-          <p className="text-muted-foreground mt-1">기업의 탄소 발자국을 모니터링하고 분석합니다.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">{t.dashboardTitle}</h1>
+          <p className="text-muted-foreground mt-1">{t.dashboardDesc}</p>
         </div>
         
         <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-muted-foreground">기업 선택:</span>
+          <span className="text-sm font-medium text-muted-foreground">{t.companySelect}:</span>
           <Select value={selectedCompany} onValueChange={setSelectedCompany}>
             <SelectTrigger className="w-[200px] bg-card shadow-sm border-muted-foreground/20">
-              <SelectValue placeholder="기업 전체" />
+              <SelectValue placeholder={t.allCompanies} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">기업 전체</SelectItem>
+              <SelectItem value="all">{t.allCompanies}</SelectItem>
               {companies.map((company) => (
                 <SelectItem key={company.id} value={company.id}>
                   {company.name}
