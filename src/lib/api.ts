@@ -121,6 +121,9 @@ export async function fetchDashboardAnalytics(companyId?: string) {
   return {
     summary: {
       totalEmissions: summary.totalEmissions,
+      currentMonthTotal: summary.currentMonthTotal,
+      growthRate: summary.growthRate,
+      mostEmittedScope: summary.mostEmittedScope,
       scopeBreakdown: summary.scopeBreakdown,
     },
     monthlyTrends: summary.monthlyTrends,

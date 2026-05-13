@@ -7,23 +7,19 @@ import { GhgEmission, Scope } from "@/lib/types";
 export function classifyScope(source: string): Scope {
   const sourceLower = source.toLowerCase();
 
-  // Scope 1 (직접 배출)
   if (["gasoline", "diesel", "lng", "coal"].includes(sourceLower)) {
     return "Scope 1";
   }
 
-  // Scope 2 (에너지 간접 배출)
   if (["electricity", "steam"].includes(sourceLower)) {
     return "Scope 2";
   }
 
-  // Scope 3 (기타 간접 배출)
   return "Scope 3";
 }
 
 /**
  * 2. PCF(제품 탄소 발자국) 요약 함수
- * 모든 배출량 데이터를 합산하여 총 배출량(tCO2eq)을 계산합니다.
  */
 export function calculateTotalEmissions(emissions: GhgEmission[]): number {
   return emissions.reduce((total, item) => total + item.emissions, 0);
@@ -31,7 +27,6 @@ export function calculateTotalEmissions(emissions: GhgEmission[]): number {
 
 /**
  * 3. 월별 추이 데이터 생성 함수
- * yearMonth 별로 배출량을 그룹화하여 차트 시각화용 데이터를 생성합니다.
  */
 export function calculateMonthlyTrends(
   emissions: GhgEmission[],
@@ -52,6 +47,40 @@ export function calculateMonthlyTrends(
 }
 
 /**
+ * 전월 대비 증감률 계산
+ */
+export function calculateGrowthRate(emissions: GhgEmission[]): { rate: number; currentTotal: number } {
+  const trends = calculateMonthlyTrends(emissions);
+  if (trends.length < 1) return { rate: 0, currentTotal: 0 };
+  
+  const current = trends[trends.length - 1].emissions;
+  if (trends.length < 2) return { rate: 0, currentTotal: current };
+
+  const previous = trends[trends.length - 2].emissions;
+  if (previous === 0) return { rate: 0, currentTotal: current };
+
+  const rate = ((current - previous) / previous) * 100;
+  return { rate: parseFloat(rate.toFixed(1)), currentTotal: current };
+}
+
+/**
+ * 가장 많이 배출된 Scope 찾기
+ */
+export function getMostEmittedScope(scopeBreakdown: Record<Scope, number>): { scope: Scope; value: number } {
+  let maxScope: Scope = "Scope 1";
+  let maxValue = -1;
+
+  (Object.entries(scopeBreakdown) as [Scope, number][]).forEach(([scope, value]) => {
+    if (value > maxValue) {
+      maxValue = value;
+      maxScope = scope;
+    }
+  });
+
+  return { scope: maxScope, value: maxValue };
+}
+
+/**
  * 대시보드 요약 데이터를 한 번에 생성하는 헬퍼 함수
  */
 export function summarizeEmissions(emissions: GhgEmission[]) {
@@ -66,8 +95,14 @@ export function summarizeEmissions(emissions: GhgEmission[]) {
     scopeBreakdown[scope] += item.emissions;
   });
 
+  const { rate, currentTotal } = calculateGrowthRate(emissions);
+  const mostEmitted = getMostEmittedScope(scopeBreakdown);
+
   return {
     totalEmissions: calculateTotalEmissions(emissions),
+    currentMonthTotal: currentTotal,
+    growthRate: rate,
+    mostEmittedScope: mostEmitted,
     scopeBreakdown,
     monthlyTrends: calculateMonthlyTrends(emissions),
   };

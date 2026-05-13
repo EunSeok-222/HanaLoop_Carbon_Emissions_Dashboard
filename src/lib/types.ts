@@ -47,7 +47,15 @@ export interface PCFData {
  */
 export interface DashboardSummary {
   totalEmissions: number;
+  currentMonthTotal: number;
+  growthRate: number;
+  mostEmittedScope: { scope: Scope; value: number };
   scopeBreakdown: Record<Scope, number>;
+}
+
+export interface DashboardAnalytics {
+  summary: DashboardSummary;
   monthlyTrends: { month: string; emissions: number }[];
   pcfBreakdown: PCFData[];
+  companies: { id: string; name: string }[];
 }
