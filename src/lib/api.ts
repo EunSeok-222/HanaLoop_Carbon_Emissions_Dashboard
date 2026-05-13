@@ -1,4 +1,5 @@
-import { Company, Post, GhgEmission, Scope, PCFData } from "@/lib/types";
+import { Company, Post, Scope, PCFData } from "@/lib/types";
+import { classifyScope, summarizeEmissions } from "@/utils/carbonCalculator";
 
 /**
  * Fake backend (Stub)
@@ -8,18 +9,6 @@ import { Company, Post, GhgEmission, Scope, PCFData } from "@/lib/types";
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const jitter = () => 200 + Math.random() * 600; // 200ms ~ 800ms
 const maybeFail = () => Math.random() < 0.15; // 15% failure rate
-
-// 배출원별 Scope 분류 매핑
-const SOURCE_TO_SCOPE: Record<string, Scope> = {
-  gasoline: "Scope 1",
-  diesel: "Scope 1",
-  lng: "Scope 1",
-  electricity: "Scope 2",
-  heat: "Scope 2",
-  logistics: "Scope 3",
-  waste: "Scope 3",
-  travel: "Scope 3",
-};
 
 // --- Mock Data ---
 const companies: Company[] = [
@@ -113,6 +102,7 @@ export async function createOrUpdatePost(
 
 /**
  * 대시보드 분석 데이터를 가져옵니다.
+ * utils/carbonCalculator.ts의 도메인 로직을 재사용합니다.
  */
 export async function fetchDashboardAnalytics(companyId?: string) {
   await delay(jitter());
@@ -125,34 +115,15 @@ export async function fetchDashboardAnalytics(companyId?: string) {
 
   const allEmissions = filteredCompanies.flatMap((c) => c.emissions);
 
-  // 1. Scope별 총합 계산
-  const scopeBreakdown: Record<Scope, number> = {
-    "Scope 1": 0,
-    "Scope 2": 0,
-    "Scope 3": 0,
-  };
-
-  allEmissions.forEach((e) => {
-    const scope = SOURCE_TO_SCOPE[e.source] || "Scope 3";
-    scopeBreakdown[scope] += e.emissions;
-  });
-
-  // 2. 월별 트렌드
-  const trendsMap: Record<string, number> = {};
-  allEmissions.forEach((e) => {
-    trendsMap[e.yearMonth] = (trendsMap[e.yearMonth] || 0) + e.emissions;
-  });
-
-  const monthlyTrends = Object.entries(trendsMap)
-    .map(([month, emissions]) => ({ month, emissions }))
-    .sort((a, b) => a.month.localeCompare(b.month));
+  // 도메인 계산 로직 적용
+  const summary = summarizeEmissions(allEmissions);
 
   return {
     summary: {
-      totalEmissions: allEmissions.reduce((sum, e) => sum + e.emissions, 0),
-      scopeBreakdown,
+      totalEmissions: summary.totalEmissions,
+      scopeBreakdown: summary.scopeBreakdown,
     },
-    monthlyTrends,
+    monthlyTrends: summary.monthlyTrends,
     pcfBreakdown: pcfData,
     companies: filteredCompanies.map((c) => ({ id: c.id, name: c.name })),
   };
