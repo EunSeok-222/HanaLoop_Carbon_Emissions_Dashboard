@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useDashboardStore } from "@/hooks/use-dashboard-store";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, Languages } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import { translations } from "@/lib/translations";
 
 export default function FilterBar() {
@@ -17,21 +17,21 @@ export default function FilterBar() {
   const t = translations[language];
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-between bg-card p-4 rounded-xl border">
+    <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-between bg-card p-4 rounded-xl border border-muted/50">
       <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center">
+        {/* 기업 필터 */}
         <div className="flex flex-col gap-1.5">
           <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">
-            {t.filterLabel}
+            분석 대상 기업
           </label>
           <Select value={filter || 'all'} onValueChange={setFilter}>
-            <SelectTrigger className="w-[180px] h-9">
-              <SelectValue placeholder={t.selectPlaceholder} />
+            <SelectTrigger className="w-[200px] h-9">
+              <SelectValue placeholder="기업 선택" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t.allSources}</SelectItem>
-              <SelectItem value="src-a">Source A</SelectItem>
-              <SelectItem value="src-b">Source B</SelectItem>
-              <SelectItem value="src-c">Source C</SelectItem>
+              <SelectItem value="all">전체 기업 (그룹)</SelectItem>
+              <SelectItem value="c1">Acme Corp</SelectItem>
+              <SelectItem value="c2">Globex</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -44,13 +44,13 @@ export default function FilterBar() {
           <div className="flex border rounded-lg overflow-hidden h-9">
             <button
               onClick={() => setLanguage('ko')}
-              className={`px-3 text-xs font-bold transition-colors ${language === 'ko' ? 'bg-primary text-primary-foreground' : 'bg-background hover:bg-muted'}`}
+              className={`px-3 text-[10px] font-bold transition-colors ${language === 'ko' ? 'bg-emerald-600 text-white' : 'bg-background hover:bg-muted'}`}
             >
               KO
             </button>
             <button
               onClick={() => setLanguage('en')}
-              className={`px-3 text-xs font-bold transition-colors ${language === 'en' ? 'bg-primary text-primary-foreground' : 'bg-background hover:bg-muted'}`}
+              className={`px-3 text-[10px] font-bold transition-colors ${language === 'en' ? 'bg-emerald-600 text-white' : 'bg-background hover:bg-muted'}`}
             >
               EN
             </button>
@@ -68,8 +68,8 @@ export default function FilterBar() {
           <RefreshCcw className="h-3.5 w-3.5 mr-2" />
           {t.reset}
         </Button>
-        <Button size="sm" className="h-9 px-4">
-          {t.export}
+        <Button size="sm" className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700">
+          탄소세 예측 리포트
         </Button>
       </div>
     </div>

@@ -1,0 +1,53 @@
+/**
+ * Carbon Emission Domain Types
+ */
+
+export type Scope = "Scope 1" | "Scope 2" | "Scope 3";
+
+export interface GhgEmission {
+  yearMonth: string; // e.g., "2025-01"
+  source: string; // gasoline, lng, electricity, etc.
+  emissions: number; // tons of CO2 equivalent
+  scope?: Scope; // Optional, can be derived
+}
+
+export interface Company {
+  id: string;
+  name: string;
+  country: string; // Country code (US, DE, KR, etc.)
+  emissions: GhgEmission[];
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  resourceUid: string; // Company.id
+  dateTime: string; // e.g., "2024-02"
+  content: string;
+}
+
+/**
+ * Product Carbon Footprint (PCF) Lifecycle Stages
+ */
+export type PCFStage =
+  | "Raw Material"
+  | "Manufacturing"
+  | "Distribution"
+  | "Use"
+  | "Disposal";
+
+export interface PCFData {
+  stage: PCFStage;
+  emissions: number;
+  percentage: number;
+}
+
+/**
+ * Summary Data for Dashboard
+ */
+export interface DashboardSummary {
+  totalEmissions: number;
+  scopeBreakdown: Record<Scope, number>;
+  monthlyTrends: { month: string; emissions: number }[];
+  pcfBreakdown: PCFData[];
+}
