@@ -29,7 +29,7 @@ export default function FilterBar() {
               <SelectValue placeholder="기업 선택" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">전체 기업 (그룹)</SelectItem>
+              <SelectItem value="all">전체 기업</SelectItem>
               <SelectItem value="c1">Acme Corp</SelectItem>
               <SelectItem value="c2">Globex</SelectItem>
             </SelectContent>

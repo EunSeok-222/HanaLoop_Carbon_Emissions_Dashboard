@@ -92,7 +92,11 @@ export default function DashboardPage() {
           <span className="text-sm font-medium text-muted-foreground">{t.companySelect}:</span>
           <Select value={selectedCompany} onValueChange={setSelectedCompany}>
             <SelectTrigger className="w-[200px] bg-card shadow-sm border-muted-foreground/20">
-              <SelectValue placeholder={t.allCompanies} />
+              <SelectValue>
+                {selectedCompany === "all" 
+                  ? t.allCompanies 
+                  : companies.find(c => c.id === selectedCompany)?.name || selectedCompany}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t.allCompanies}</SelectItem>
