@@ -79,7 +79,9 @@ export default function ReportsPage() {
   }, [posts, searchQuery, selectedCompanyId]);
 
   const getCompanyName = (uid: string) => {
-    return companies.find(c => c.id === uid)?.name || uid;
+    if (uid === "all") return t.allCompanies;
+    const company = companies.find(c => c.id === uid);
+    return company ? company.name : uid;
   };
 
   return (
@@ -107,7 +109,9 @@ export default function ReportsPage() {
           <Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
           <Select value={selectedCompanyId} onValueChange={setSelectedCompanyId}>
             <SelectTrigger className="w-full md:w-[200px] bg-background">
-              <SelectValue placeholder={t.companySelect} />
+              <SelectValue placeholder={t.companySelect}>
+                {getCompanyName(selectedCompanyId)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t.allCompanies}</SelectItem>
