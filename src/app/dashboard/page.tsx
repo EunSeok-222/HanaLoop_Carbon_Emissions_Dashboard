@@ -105,8 +105,10 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-muted-foreground">{t.companySelect}:</span>
           <Select value={selectedCompany} onValueChange={(val) => {
-            setSelectedCompany(val);
-            setSelectedMonth(null); // Reset month when company changes
+            if (val) {
+              setSelectedCompany(val);
+              setSelectedMonth(null); // Reset month when company changes
+            }
           }}>
             <SelectTrigger className="w-[200px] bg-card shadow-sm border-muted-foreground/20">
               <SelectValue>
