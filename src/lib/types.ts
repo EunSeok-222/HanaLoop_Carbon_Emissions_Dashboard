@@ -37,7 +37,7 @@ export type PCFStage =
   | "Disposal";
 
 export interface PCFData {
-  stage: PCFStage;
+  stage: string;
   emissions: number;
   percentage: number;
 }

@@ -27,10 +27,14 @@ export const translations = {
     growthUp: "상승",
     growthDown: "하락",
     growthEqual: "동일",
+    summaryCarbonTax: "예상 탄소세",
+    carbonTaxDesc: "배출량 기준 세금 추정치",
+    currencyKrw: "원",
 
     // Charts
     chartTrendTitle: "월별 탄소 배출량 추이",
     chartScopeTitle: "Scope별 배출 비중",
+    chartPcfTitle: "PCF 생애주기 분석 (시뮬레이션)",
     unitEmission: "배출량 (tCO2eq)",
 
     // Settings
@@ -66,6 +70,13 @@ export const translations = {
     delete: "삭제",
     noEmissions: "등록된 배출 내역이 없습니다.",
     manageEmissions: "배출 내역 관리",
+    pcfStages: {
+      rawMaterial: "원재료",
+      manufacturing: "제조",
+      distribution: "유통",
+      use: "사용",
+      disposal: "폐기",
+    },
   },
   en: {
     // General
@@ -95,10 +106,14 @@ export const translations = {
     growthUp: "Increase",
     growthDown: "Decrease",
     growthEqual: "No Change",
+    summaryCarbonTax: "Estimated Carbon Tax",
+    carbonTaxDesc: "Estimated tax based on emissions",
+    currencyKrw: "KRW",
 
     // Charts
     chartTrendTitle: "Monthly Emission Trends",
     chartScopeTitle: "Emissions by Scope",
+    chartPcfTitle: "PCF Lifecycle Analysis (Simulated)",
     unitEmission: "Emissions (tCO2eq)",
 
     // Settings
@@ -134,6 +149,13 @@ export const translations = {
     delete: "Delete",
     noEmissions: "No emission entries found.",
     manageEmissions: "Manage Emissions",
+    pcfStages: {
+      rawMaterial: "Raw Material",
+      manufacturing: "Manufacturing",
+      distribution: "Distribution",
+      use: "Use",
+      disposal: "Disposal",
+    },
   }
 };
 

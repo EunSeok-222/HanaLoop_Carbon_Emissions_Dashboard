@@ -42,14 +42,17 @@ export default function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchDashboardAnalytics(companyId === "all" ? undefined : companyId);
+      const data = await fetchDashboardAnalytics(
+        companyId === "all" ? undefined : companyId,
+        language
+      );
       setDashboardData(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : t.loadingData);
     } finally {
       setLoading(false);
     }
-  }, [t.loadingData]);
+  }, [t.loadingData, language]);
 
   useEffect(() => {
     loadInitialData();
@@ -115,15 +118,15 @@ export default function DashboardPage() {
       ) : (
         <>
           {/* Summary Section */}
-          <section>
+          <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both">
             <SummaryCards data={dashboardData.summary} />
           </section>
 
           {/* Charts Section */}
-          <section>
+          <section className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-150 fill-mode-both">
             <EmissionCharts 
               monthlyTrends={dashboardData.monthlyTrends} 
-              scopeBreakdown={dashboardData.summary.scopeBreakdown}
+              pcfBreakdown={dashboardData.pcfBreakdown}
             />
           </section>
         </>

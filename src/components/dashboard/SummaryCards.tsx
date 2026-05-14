@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, TrendingUp, TrendingDown, Target, Zap } from "lucide-react";
+import { Leaf, TrendingUp, TrendingDown, Target, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDashboardStore } from "@/hooks/use-dashboard-store";
 import { translations } from "@/lib/translations";
@@ -12,6 +12,7 @@ interface SummaryCardsProps {
     growthRate: number;
     mostEmittedScope: { scope: string; value: number };
     totalEmissions: number;
+    estimatedCarbonTax: number;
   };
 }
 
@@ -49,10 +50,10 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
       bg: "bg-amber-50",
     },
     {
-      title: t.summaryCumulative,
-      value: `${data.totalEmissions.toLocaleString()} t`,
-      description: t.annualCumulative,
-      icon: Zap,
+      title: t.summaryCarbonTax,
+      value: `${data.estimatedCarbonTax.toLocaleString()} ${t.currencyKrw}`,
+      description: t.carbonTaxDesc,
+      icon: Coins,
       color: "text-blue-600",
       bg: "bg-blue-50",
     },

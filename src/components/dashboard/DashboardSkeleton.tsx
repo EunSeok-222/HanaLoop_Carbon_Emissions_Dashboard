@@ -27,8 +27,8 @@ export default function DashboardSkeleton() {
       </div>
 
       {/* Charts Skeleton */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-2 border-none shadow-md">
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="border-none shadow-md">
           <CardHeader>
             <Skeleton className="h-6 w-48" />
           </CardHeader>

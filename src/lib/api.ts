@@ -1,5 +1,5 @@
-import { Company, Post, Scope, PCFData } from "@/lib/types";
-import { classifyScope, summarizeEmissions } from "@/utils/carbonCalculator";
+import { Company, Post, DashboardAnalytics, Language } from "@/lib/types";
+import { summarizeEmissions } from "@/utils/carbonCalculator";
 
 /**
  * Fake backend (Stub)
@@ -128,7 +128,10 @@ export async function createOrUpdatePost(
  * 대시보드 분석 데이터를 가져옵니다.
  * utils/carbonCalculator.ts의 도메인 로직을 재사용합니다.
  */
-export async function fetchDashboardAnalytics(companyId?: string) {
+export async function fetchDashboardAnalytics(
+  companyId?: string,
+  language: Language = "ko",
+): Promise<DashboardAnalytics> {
   await delay(jitter());
   if (maybeFail())
     throw new Error("통계 데이터를 가공하는 중 오류가 발생했습니다.");
@@ -140,7 +143,7 @@ export async function fetchDashboardAnalytics(companyId?: string) {
   const allEmissions = filteredCompanies.flatMap((c) => c.emissions);
 
   // 도메인 계산 로직 적용
-  const summary = summarizeEmissions(allEmissions);
+  const summary = summarizeEmissions(allEmissions, language);
 
   return {
     summary: {

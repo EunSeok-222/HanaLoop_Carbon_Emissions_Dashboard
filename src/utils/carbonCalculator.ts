@@ -1,4 +1,5 @@
-import { GhgEmission, Scope, PCFData } from "@/lib/types";
+import { GhgEmission, Scope, PCFData, Language } from "@/lib/types";
+import { translations } from "@/lib/translations";
 
 /**
  * 1. GHG Scope 분류 함수
@@ -29,13 +30,17 @@ export function calculateTotalEmissions(emissions: GhgEmission[]): number {
  * 3. PCF(제품 탄소 발자국) 생애주기 시뮬레이션
  * 원재료(30%), 제조(40%), 유통(15%), 사용(10%), 폐기(5%)
  */
-export function simulatePCFBreakdown(totalEmissions: number): PCFData[] {
-  const stages: { stage: PCFData["stage"]; ratio: number }[] = [
-    { stage: "Raw Material", ratio: 0.3 },
-    { stage: "Manufacturing", ratio: 0.4 },
-    { stage: "Distribution", ratio: 0.15 },
-    { stage: "Use", ratio: 0.1 },
-    { stage: "Disposal", ratio: 0.05 },
+export function simulatePCFBreakdown(
+  totalEmissions: number,
+  language: Language = "ko",
+): PCFData[] {
+  const t = translations[language];
+  const stages: { stage: string; ratio: number }[] = [
+    { stage: t.pcfStages.rawMaterial, ratio: 0.3 },
+    { stage: t.pcfStages.manufacturing, ratio: 0.4 },
+    { stage: t.pcfStages.distribution, ratio: 0.15 },
+    { stage: t.pcfStages.use, ratio: 0.1 },
+    { stage: t.pcfStages.disposal, ratio: 0.05 },
   ];
 
   return stages.map(({ stage, ratio }) => ({
@@ -79,9 +84,10 @@ export function calculateMonthlyTrends(
 /**
  * 전월 대비 증감률 계산
  */
-export function calculateGrowthRate(
-  emissions: GhgEmission[],
-): { rate: number; currentTotal: number } {
+export function calculateGrowthRate(emissions: GhgEmission[]): {
+  rate: number;
+  currentTotal: number;
+} {
   const trends = calculateMonthlyTrends(emissions);
   if (trends.length < 1) return { rate: 0, currentTotal: 0 };
 
@@ -98,9 +104,10 @@ export function calculateGrowthRate(
 /**
  * 가장 많이 배출된 Scope 찾기
  */
-export function getMostEmittedScope(
-  scopeBreakdown: Record<Scope, number>,
-): { scope: Scope; value: number } {
+export function getMostEmittedScope(scopeBreakdown: Record<Scope, number>): {
+  scope: Scope;
+  value: number;
+} {
   let maxScope: Scope = "Scope 1";
   let maxValue = -1;
 
@@ -119,7 +126,10 @@ export function getMostEmittedScope(
 /**
  * 대시보드 요약 데이터를 한 번에 생성하는 헬퍼 함수
  */
-export function summarizeEmissions(emissions: GhgEmission[]) {
+export function summarizeEmissions(
+  emissions: GhgEmission[],
+  language: Language = "ko",
+) {
   const totalEmissions = calculateTotalEmissions(emissions);
   const scopeBreakdown: Record<Scope, number> = {
     "Scope 1": 0,
@@ -142,7 +152,7 @@ export function summarizeEmissions(emissions: GhgEmission[]) {
     mostEmittedScope: mostEmitted,
     scopeBreakdown,
     monthlyTrends: calculateMonthlyTrends(emissions),
-    pcfSimulation: simulatePCFBreakdown(totalEmissions),
+    pcfSimulation: simulatePCFBreakdown(totalEmissions, language),
     estimatedCarbonTax: calculateCarbonTax(currentTotal),
   };
 }

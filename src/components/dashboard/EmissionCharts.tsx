@@ -27,10 +27,10 @@ ChartJS.register(
 
 interface EmissionChartsProps {
   monthlyTrends: { month: string; emissions: number }[];
-  scopeBreakdown: Record<string, number>;
+  pcfBreakdown: { stage: string; emissions: number; percentage: number }[];
 }
 
-export default function EmissionCharts({ monthlyTrends, scopeBreakdown }: EmissionChartsProps) {
+export default function EmissionCharts({ monthlyTrends, pcfBreakdown }: EmissionChartsProps) {
   const { language } = useDashboardStore();
   const t = translations[language];
 
@@ -49,16 +49,18 @@ export default function EmissionCharts({ monthlyTrends, scopeBreakdown }: Emissi
     ],
   };
 
-  // Doughnut Chart Data
-  const doughnutData = {
-    labels: Object.keys(scopeBreakdown),
+  // PCF Doughnut Chart Data
+  const pcfData = {
+    labels: pcfBreakdown.map((item) => item.stage),
     datasets: [
       {
-        data: Object.values(scopeBreakdown),
+        data: pcfBreakdown.map((item) => item.emissions),
         backgroundColor: [
-          'rgba(59, 130, 246, 0.8)', // Scope 1
-          'rgba(245, 158, 11, 0.8)', // Scope 2
-          'rgba(100, 116, 139, 0.8)', // Scope 3
+          'rgba(59, 130, 246, 0.8)', // Raw Material
+          'rgba(16, 185, 129, 0.8)', // Manufacturing
+          'rgba(245, 158, 11, 0.8)', // Distribution
+          'rgba(139, 92, 246, 0.8)', // Use
+          'rgba(100, 116, 139, 0.8)', // Disposal
         ],
         hoverOffset: 4,
         borderWidth: 0,
@@ -82,12 +84,12 @@ export default function EmissionCharts({ monthlyTrends, scopeBreakdown }: Emissi
   };
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <Card className="lg:col-span-2 border-none shadow-md ring-1 ring-border/50">
-        <CardHeader>
+    <div className="grid gap-6 md:grid-cols-2">
+      <Card className="border-none shadow-md ring-1 ring-border/50 overflow-hidden">
+        <CardHeader className="bg-slate-50/50 border-b">
           <CardTitle className="text-lg font-bold">{t.chartTrendTitle}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="h-[350px]">
             <Bar 
               data={barData} 
@@ -103,17 +105,17 @@ export default function EmissionCharts({ monthlyTrends, scopeBreakdown }: Emissi
         </CardContent>
       </Card>
 
-      <Card className="border-none shadow-md ring-1 ring-border/50">
-        <CardHeader>
-          <CardTitle className="text-lg font-bold">{t.chartScopeTitle}</CardTitle>
+      <Card className="border-none shadow-md ring-1 ring-border/50 overflow-hidden">
+        <CardHeader className="bg-slate-50/50 border-b">
+          <CardTitle className="text-lg font-bold">{t.chartPcfTitle}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="h-[350px] flex items-center justify-center">
             <Doughnut 
-              data={doughnutData} 
+              data={pcfData} 
               options={{
                 ...chartOptions,
-                cutout: '70%',
+                cutout: '65%',
               }} 
             />
           </div>
