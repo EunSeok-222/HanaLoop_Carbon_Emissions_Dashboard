@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { fetchDashboardAnalytics, fetchCompanies } from '@/lib/api';
 import { Company } from '@/lib/types';
 import SummaryCards from '@/components/dashboard/SummaryCards';
+import AIInsights from '@/components/dashboard/AIInsights';
 import EmissionCharts from '@/components/dashboard/EmissionCharts';
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -70,8 +71,8 @@ export default function DashboardPage() {
           <AlertTitle>{t.errorTitle}</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
-        <Button 
-          onClick={() => loadDashboardData(selectedCompany)} 
+        <Button
+          onClick={() => loadDashboardData(selectedCompany)}
           variant="outline"
           className="gap-2 transition-all hover:bg-accent"
         >
@@ -90,14 +91,14 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-bold tracking-tight text-foreground">{t.dashboardTitle}</h1>
           <p className="text-muted-foreground mt-1">{t.dashboardDesc}</p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-muted-foreground">{t.companySelect}:</span>
           <Select value={selectedCompany} onValueChange={setSelectedCompany}>
             <SelectTrigger className="w-[200px] bg-card shadow-sm border-muted-foreground/20">
               <SelectValue>
-                {selectedCompany === "all" 
-                  ? t.allCompanies 
+                {selectedCompany === "all"
+                  ? t.allCompanies
                   : companies.find(c => c.id === selectedCompany)?.name || selectedCompany}
               </SelectValue>
             </SelectTrigger>
@@ -124,10 +125,15 @@ export default function DashboardPage() {
 
           {/* Charts Section */}
           <section className="animate-in fade-in slide-in-from-bottom-6 duration-700 delay-150 fill-mode-both">
-            <EmissionCharts 
-              monthlyTrends={dashboardData.monthlyTrends} 
+            <EmissionCharts
+              monthlyTrends={dashboardData.monthlyTrends}
               pcfBreakdown={dashboardData.pcfBreakdown}
             />
+          </section>
+
+          {/* AI Insights Section */}
+          <section className="animate-in fade-in slide-in-from-bottom-5 duration-600 delay-100 fill-mode-both">
+            <AIInsights data={dashboardData} />
           </section>
         </>
       )}

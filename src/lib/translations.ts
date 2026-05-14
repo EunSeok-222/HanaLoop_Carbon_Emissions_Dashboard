@@ -77,6 +77,10 @@ export const translations = {
       use: "사용",
       disposal: "폐기",
     },
+    aiInsightTitle: "AI 탄소 관리 인사이트",
+    aiInsightLoading: "AI가 전문가 의견을 분석 중입니다...",
+    aiInsightError: "인사이트를 가져오는 중 오류가 발생했습니다.",
+    aiInsightExpertName: "HanaLoop AI 환경 컨설턴트",
   },
   en: {
     // General
@@ -156,6 +160,10 @@ export const translations = {
       use: "Use",
       disposal: "Disposal",
     },
+    aiInsightTitle: "AI Carbon Insights",
+    aiInsightLoading: "AI is analyzing expert opinions...",
+    aiInsightError: "An error occurred while fetching insights.",
+    aiInsightExpertName: "HanaLoop AI Sustainability Consultant",
   }
 };
 
