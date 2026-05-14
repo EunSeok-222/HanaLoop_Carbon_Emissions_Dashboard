@@ -1,6 +1,6 @@
 'use client';
 
-import { PCFData } from "@/types/emission";
+import { PCFData } from "@/lib/types";
 import { useDashboardStore } from "@/hooks/use-dashboard-store";
 import { translations } from "@/lib/translations";
 import { Progress } from "@/components/ui/progress";
@@ -31,13 +31,7 @@ export default function ServiceStatus({ items }: ServiceStatusProps) {
               <span className="font-medium">{item.stage}</span>
               <span className="text-muted-foreground font-mono">{item.emissions} tCO2eq ({item.percentage}%)</span>
             </div>
-            {/* Shadcn Progress 컴포넌트를 사용하여 시각화 (임시로 div 구현) */}
-            <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-emerald-500 transition-all duration-1000 ease-in-out" 
-                style={{ width: `${item.percentage}%` }}
-              />
-            </div>
+            <Progress value={item.percentage} className="h-2" />
           </div>
         ))}
       </div>
