@@ -28,9 +28,16 @@ ChartJS.register(
 interface EmissionChartsProps {
   monthlyTrends: { month: string; emissions: number }[];
   pcfBreakdown: { stage: string; emissions: number; percentage: number }[];
+  selectedMonth?: string | null;
+  onMonthSelect?: (month: string) => void;
 }
 
-export default function EmissionCharts({ monthlyTrends, pcfBreakdown }: EmissionChartsProps) {
+export default function EmissionCharts({ 
+  monthlyTrends, 
+  pcfBreakdown, 
+  selectedMonth, 
+  onMonthSelect 
+}: EmissionChartsProps) {
   const { language } = useDashboardStore();
   const t = translations[language];
 
@@ -41,7 +48,9 @@ export default function EmissionCharts({ monthlyTrends, pcfBreakdown }: Emission
       {
         label: t.unitEmission,
         data: monthlyTrends.map((t) => t.emissions),
-        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+        backgroundColor: monthlyTrends.map((t) => 
+          t.month === selectedMonth ? 'rgba(16, 185, 129, 1)' : 'rgba(16, 185, 129, 0.4)'
+        ),
         borderColor: 'rgb(16, 185, 129)',
         borderWidth: 1,
         borderRadius: 6,
@@ -95,6 +104,12 @@ export default function EmissionCharts({ monthlyTrends, pcfBreakdown }: Emission
               data={barData} 
               options={{
                 ...chartOptions,
+                onClick: (event, elements) => {
+                  if (elements.length > 0 && onMonthSelect) {
+                    const index = elements[0].index;
+                    onMonthSelect(monthlyTrends[index].month);
+                  }
+                },
                 scales: {
                   y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
                   x: { grid: { display: false } }

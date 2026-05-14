@@ -8,9 +8,15 @@ import { translations } from "@/lib/translations";
 
 interface SummaryCardsProps {
   data: {
+    selectedMonth?: string;
     currentMonthTotal: number;
     growthRate: number;
-    mostEmittedScope: { scope: string; value: number };
+    mostEmittedScope: { 
+      scope: string; 
+      value: number;
+      topSource?: string;
+      topStage?: string;
+    };
     totalEmissions: number;
     estimatedCarbonTax: number;
   };
@@ -27,7 +33,7 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
     {
       title: t.summaryTotal,
       value: `${data.currentMonthTotal.toLocaleString()} tCO2eq`,
-      description: t.currentMonthDesc,
+      description: data.selectedMonth ? `${data.selectedMonth} ${t.summaryTotal}` : t.currentMonthDesc,
       icon: Leaf,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
@@ -44,7 +50,8 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
     {
       title: t.summaryMaxScope,
       value: data.mostEmittedScope.scope,
-      description: `${data.mostEmittedScope.value.toLocaleString()} tCO2eq`,
+      description: data.mostEmittedScope.topSource ? `${data.mostEmittedScope.topSource} (${data.mostEmittedScope.topStage})` : `${data.mostEmittedScope.value.toLocaleString()} tCO2eq`,
+      extra: data.mostEmittedScope.topSource ? `${data.mostEmittedScope.value.toLocaleString()} tCO2eq` : null,
       icon: Target,
       color: "text-amber-600",
       bg: "bg-amber-50",
@@ -79,6 +86,11 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
             )}>
               {stat.description}
             </div>
+            {stat.extra && (
+              <div className="text-[10px] text-muted-foreground mt-0.5 opacity-80">
+                {stat.extra}
+              </div>
+            )}
           </CardContent>
         </Card>
       ))}

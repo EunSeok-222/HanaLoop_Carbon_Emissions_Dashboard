@@ -162,6 +162,7 @@ export async function createOrUpdatePost(
 export async function fetchDashboardAnalytics(
   companyId?: string,
   language: Language = "ko",
+  targetMonth?: string
 ): Promise<DashboardAnalytics> {
   await delay(jitter());
   if (maybeFail())
@@ -173,11 +174,12 @@ export async function fetchDashboardAnalytics(
 
   const allEmissions = filteredCompanies.flatMap((c) => c.emissions);
 
-  // 도메인 계산 로직 적용
-  const summary = summarizeEmissions(allEmissions, language);
+  // 도메인 계산 로직 적용 (targetMonth 전달)
+  const summary = summarizeEmissions(allEmissions, language, targetMonth);
 
   return {
     summary: {
+      selectedMonth: summary.selectedMonth,
       totalEmissions: summary.totalEmissions,
       currentMonthTotal: summary.currentMonthTotal,
       growthRate: summary.growthRate,

@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<string>("all");
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [dashboardData, setDashboardData] = useState<any>(null);
 
   const loadInitialData = useCallback(async () => {
@@ -39,15 +40,19 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const loadDashboardData = useCallback(async (companyId?: string) => {
+  const loadDashboardData = useCallback(async (companyId?: string, month?: string) => {
     setLoading(true);
     setError(null);
     try {
       const data = await fetchDashboardAnalytics(
         companyId === "all" ? undefined : companyId,
-        language
+        language,
+        month
       );
       setDashboardData(data);
+      if (data.summary.selectedMonth) {
+        setSelectedMonth(data.summary.selectedMonth);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : t.loadingData);
     } finally {
@@ -63,6 +68,11 @@ export default function DashboardPage() {
     loadDashboardData(selectedCompany);
   }, [selectedCompany, loadDashboardData]);
 
+  const handleMonthSelect = (month: string) => {
+    setSelectedMonth(month);
+    loadDashboardData(selectedCompany, month);
+  };
+
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] space-y-6">
@@ -72,7 +82,7 @@ export default function DashboardPage() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
         <Button
-          onClick={() => loadDashboardData(selectedCompany)}
+          onClick={() => loadDashboardData(selectedCompany, selectedMonth || undefined)}
           variant="outline"
           className="gap-2 transition-all hover:bg-accent"
         >
@@ -94,7 +104,10 @@ export default function DashboardPage() {
 
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-muted-foreground">{t.companySelect}:</span>
-          <Select value={selectedCompany} onValueChange={setSelectedCompany}>
+          <Select value={selectedCompany} onValueChange={(val) => {
+            setSelectedCompany(val);
+            setSelectedMonth(null); // Reset month when company changes
+          }}>
             <SelectTrigger className="w-[200px] bg-card shadow-sm border-muted-foreground/20">
               <SelectValue>
                 {selectedCompany === "all"
@@ -114,7 +127,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {loading ? (
+      {loading && !dashboardData ? (
         <DashboardSkeleton />
       ) : (
         <>
@@ -128,6 +141,8 @@ export default function DashboardPage() {
             <EmissionCharts
               monthlyTrends={dashboardData.monthlyTrends}
               pcfBreakdown={dashboardData.pcfBreakdown}
+              selectedMonth={selectedMonth}
+              onMonthSelect={handleMonthSelect}
             />
           </section>
 
