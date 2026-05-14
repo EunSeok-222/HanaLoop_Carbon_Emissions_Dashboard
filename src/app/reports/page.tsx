@@ -107,7 +107,7 @@ export default function ReportsPage() {
         
         <div className="flex items-center gap-3 w-full md:w-auto">
           <Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
-          <Select value={selectedCompanyId} onValueChange={setSelectedCompanyId}>
+          <Select value={selectedCompanyId} onValueChange={(val) => val && setSelectedCompanyId(val)}>
             <SelectTrigger className="w-full md:w-[200px] bg-background">
               <SelectValue placeholder={t.companySelect}>
                 {getCompanyName(selectedCompanyId)}

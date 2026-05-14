@@ -15,6 +15,7 @@ export const translations = {
     loadingData: "데이터를 불러오는 중...",
     errorTitle: "오류 발생",
     retry: "다시 시도",
+    reset: "초기화",
 
     // Summary Cards
     summaryTotal: "당월 총 배출량",
@@ -102,6 +103,7 @@ export const translations = {
     loadingData: "Loading data...",
     errorTitle: "Error Occurred",
     retry: "Retry",
+    reset: "Reset",
 
     // Summary Cards
     summaryTotal: "Monthly Emissions",

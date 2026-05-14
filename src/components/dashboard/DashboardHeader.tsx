@@ -9,9 +9,9 @@ export default function DashboardHeader() {
 
   return (
     <header className="flex flex-col gap-1">
-      <h1 className="text-2xl font-bold tracking-tight">{t.title}</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{t.dashboardTitle}</h1>
       <p className="text-sm text-muted-foreground">
-        {t.description}
+        {t.dashboardDesc}
       </p>
     </header>
   );
