@@ -1,3 +1,5 @@
+export type Language = "ko" | "en";
+
 /**
  * Carbon Emission Domain Types
  */
@@ -46,10 +48,16 @@ export interface PCFData {
  * Summary Data for Dashboard
  */
 export interface DashboardSummary {
+  selectedMonth?: string;
   totalEmissions: number;
   currentMonthTotal: number;
   growthRate: number;
-  mostEmittedScope: { scope: Scope; value: number };
+  mostEmittedScope: { 
+    scope: Scope; 
+    value: number;
+    topSource?: string;
+    topStage?: string;
+  };
   scopeBreakdown: Record<Scope, number>;
   estimatedCarbonTax: number;
 }
