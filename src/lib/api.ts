@@ -10,8 +10,26 @@ const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const jitter = () => 200 + Math.random() * 600; // 200ms ~ 800ms
 const maybeFail = () => Math.random() < 0.15; // 15% failure rate
 
-// --- Mock Data ---
-let companies: Company[] = [
+// --- LocalStorage Helpers ---
+const POSTS_KEY = 'hanaloop_posts_v1';
+const COMPANIES_KEY = 'hanaloop_companies_v1';
+
+const saveToStorage = (key: string, data: any) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+};
+
+const loadFromStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : null;
+  }
+  return null;
+};
+
+// --- Initial Mock Data ---
+const initialCompanies: Company[] = [
   {
     id: "c1",
     name: "Acme Corp",
@@ -57,7 +75,7 @@ let companies: Company[] = [
   },
 ];
 
-let posts: Post[] = [
+const initialPosts: Post[] = [
   {
     id: "p1",
     title: "Sustainability Report 2024",
@@ -66,6 +84,16 @@ let posts: Post[] = [
     content: "Quarterly CO2 update",
   },
 ];
+
+// --- Mutable State ---
+let companies: Company[] = loadFromStorage(COMPANIES_KEY) || initialCompanies;
+let posts: Post[] = loadFromStorage(POSTS_KEY) || initialPosts;
+
+// Sync back to storage if it was empty
+if (typeof window !== 'undefined' && !localStorage.getItem(COMPANIES_KEY)) {
+  saveToStorage(COMPANIES_KEY, companies);
+  saveToStorage(POSTS_KEY, posts);
+}
 
 // --- API Functions ---
 
@@ -88,6 +116,7 @@ export async function updateCompany(
   if (index === -1) throw new Error("해당 기업을 찾을 수 없습니다.");
 
   companies[index] = { ...companies[index], ...data };
+  saveToStorage(COMPANIES_KEY, companies);
   return companies[index];
 }
 
@@ -111,6 +140,7 @@ export async function createOrUpdatePost(
     const index = posts.findIndex((p) => p.id === post.id);
     if (index !== -1) {
       posts[index] = { ...posts[index], ...post } as Post;
+      saveToStorage(POSTS_KEY, posts);
       return posts[index];
     }
   }
@@ -121,6 +151,7 @@ export async function createOrUpdatePost(
   } as Post;
 
   posts = [newPost, ...posts];
+  saveToStorage(POSTS_KEY, posts);
   return newPost;
 }
 
@@ -136,7 +167,7 @@ export async function fetchDashboardAnalytics(
   if (maybeFail())
     throw new Error("통계 데이터를 가공하는 중 오류가 발생했습니다.");
 
-  const filteredCompanies = companyId
+  const filteredCompanies = companyId && companyId !== "all"
     ? companies.filter((c) => c.id === companyId)
     : companies;
 
@@ -159,6 +190,7 @@ export async function fetchDashboardAnalytics(
     companies: filteredCompanies.map((c) => ({ id: c.id, name: c.name })),
   };
 }
+
 /**
  * AI 탄소 인사이트를 가져옵니다.
  * 실제 구현 시 Gemini API 등을 호출합니다.
@@ -200,6 +232,7 @@ Currently, **${summary.mostEmittedScope.scope}** is the primary emission source 
 Implementing these measures is expected to reduce next quarter's emissions by **over 10%**.`;
   }
 }
+
 /**
  * 특정 기업의 가장 최근 AI 인사이트 리포트를 가져옵니다.
  */
