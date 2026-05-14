@@ -29,6 +29,7 @@ const companies: Company[] = [
       { yearMonth: "2024-05", source: "electricity", emissions: 70 },
       { yearMonth: "2024-06", source: "lng", emissions: 65 },
       { yearMonth: "2024-06", source: "electricity", emissions: 65 },
+      { yearMonth: "2024-06", source: "etc", emissions: 30 },
     ],
   },
   {
@@ -49,6 +50,9 @@ const companies: Company[] = [
       { yearMonth: "2024-05", source: "electricity", emissions: 180 },
       { yearMonth: "2024-06", source: "lng", emissions: 155 },
       { yearMonth: "2024-06", source: "electricity", emissions: 190 },
+      { yearMonth: "2024-06", source: "steam", emissions: 55 },
+      { yearMonth: "2024-06", source: "etc", emissions: 90 },
+      { yearMonth: "2024-06", source: "gas", emissions: 90 },
     ],
   },
 ];
