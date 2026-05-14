@@ -17,13 +17,13 @@ export default function Home() {
           <Leaf size={14} />
           <span>탄소 관리의 새로운 기준</span>
         </div>
-        
+
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-          하나루프 <span className="text-emerald-600">카본 대시보드</span>
+          HanaLoop <span className="text-emerald-600">카본 대시보드</span>
         </h1>
-        
+
         <p className="max-w-2xl text-xl text-slate-600 mb-12 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-          기업의 탄소 배출량을 실시간으로 분석하고, 정확한 GHG Scope 분류를 통해 
+          기업의 탄소 배출량을 실시간으로 분석하고, 정확한 GHG Scope 분류를 통해
           기후 변화 대응 전략을 수립하세요. 전문적인 데이터 시각화가 비즈니스의 통찰력을 더합니다.
         </p>
 

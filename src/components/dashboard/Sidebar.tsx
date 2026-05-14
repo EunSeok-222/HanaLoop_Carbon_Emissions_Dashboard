@@ -35,7 +35,7 @@ export default function Sidebar() {
             <Leaf size={20} />
           </div>
           <span className="self-center whitespace-nowrap text-xl font-bold tracking-tight text-foreground">
-            하나루프
+            HanaLoop
           </span>
         </Link>
 
