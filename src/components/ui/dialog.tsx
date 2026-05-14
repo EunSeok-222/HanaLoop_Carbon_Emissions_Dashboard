@@ -16,6 +16,9 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
 
   React.useEffect(() => {
     setMounted(true);
+  }, []);
+
+  React.useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -34,7 +37,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={() => onOpenChange(false)}
       />
-      <div className="relative z-50 w-full max-w-md overflow-hidden rounded-xl bg-card p-6 shadow-2xl ring-1 ring-border animate-in zoom-in-95 duration-200">
+      <div className="relative z-50 w-full max-w-4xl overflow-hidden rounded-xl bg-card p-6 shadow-2xl ring-1 ring-border animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <button
           onClick={() => onOpenChange(false)}
           className="absolute right-4 top-4 rounded-full p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
@@ -52,14 +55,14 @@ export function DialogContent({ children, className }: { children: React.ReactNo
   return <div className={cn("mt-2", className)}>{children}</div>;
 }
 
-export function DialogHeader({ children }: { children: React.ReactNode }) {
-  return <div className="mb-4">{children}</div>;
+export function DialogHeader({ children, className }: { children: React.ReactNode, className?: string }) {
+  return <div className={cn("mb-4", className)}>{children}</div>;
 }
 
-export function DialogTitle({ children }: { children: React.ReactNode }) {
-  return <h2 className="text-xl font-bold tracking-tight">{children}</h2>;
+export function DialogTitle({ children, className }: { children: React.ReactNode, className?: string }) {
+  return <h2 className={cn("text-xl font-bold tracking-tight", className)}>{children}</h2>;
 }
 
-export function DialogFooter({ children }: { children: React.ReactNode }) {
-  return <div className="mt-6 flex justify-end gap-3">{children}</div>;
+export function DialogFooter({ children, className }: { children: React.ReactNode, className?: string }) {
+  return <div className={cn("mt-6 flex justify-end gap-3", className)}>{children}</div>;
 }

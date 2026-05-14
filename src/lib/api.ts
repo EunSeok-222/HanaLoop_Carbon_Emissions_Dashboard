@@ -11,17 +11,17 @@ const jitter = () => 200 + Math.random() * 600; // 200ms ~ 800ms
 const maybeFail = () => Math.random() < 0.15; // 15% failure rate
 
 // --- LocalStorage Helpers ---
-const POSTS_KEY = 'hanaloop_posts_v1';
-const COMPANIES_KEY = 'hanaloop_companies_v1';
+const POSTS_KEY = "hanaloop_posts_v1";
+const COMPANIES_KEY = "hanaloop_companies_v1";
 
 const saveToStorage = (key: string, data: any) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     localStorage.setItem(key, JSON.stringify(data));
   }
 };
 
 const loadFromStorage = (key: string) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const saved = localStorage.getItem(key);
     return saved ? JSON.parse(saved) : null;
   }
@@ -90,7 +90,7 @@ let companies: Company[] = loadFromStorage(COMPANIES_KEY) || initialCompanies;
 let posts: Post[] = loadFromStorage(POSTS_KEY) || initialPosts;
 
 // Sync back to storage if it was empty
-if (typeof window !== 'undefined' && !localStorage.getItem(COMPANIES_KEY)) {
+if (typeof window !== "undefined" && !localStorage.getItem(COMPANIES_KEY)) {
   saveToStorage(COMPANIES_KEY, companies);
   saveToStorage(POSTS_KEY, posts);
 }
@@ -106,7 +106,7 @@ export async function fetchCompanies(): Promise<Company[]> {
 
 export async function updateCompany(
   id: string,
-  data: Partial<Pick<Company, "name" | "country" | "emissions">>
+  data: Partial<Pick<Company, "name" | "country" | "emissions">>,
 ): Promise<Company> {
   await delay(jitter());
   if (maybeFail())
@@ -162,15 +162,16 @@ export async function createOrUpdatePost(
 export async function fetchDashboardAnalytics(
   companyId?: string,
   language: Language = "ko",
-  targetMonth?: string
+  targetMonth?: string,
 ): Promise<DashboardAnalytics> {
   await delay(jitter());
   if (maybeFail())
     throw new Error("통계 데이터를 가공하는 중 오류가 발생했습니다.");
 
-  const filteredCompanies = companyId && companyId !== "all"
-    ? companies.filter((c) => c.id === companyId)
-    : companies;
+  const filteredCompanies =
+    companyId && companyId !== "all"
+      ? companies.filter((c) => c.id === companyId)
+      : companies;
 
   const allEmissions = filteredCompanies.flatMap((c) => c.emissions);
 
@@ -206,7 +207,9 @@ export async function fetchAIInsights(
     throw new Error("AI 엔진 연결 중 일시적인 오류가 발생했습니다.");
 
   const { summary, pcfBreakdown } = data;
-  const maxStage = [...pcfBreakdown].sort((a, b) => b.emissions - a.emissions)[0];
+  const maxStage = [...pcfBreakdown].sort(
+    (a, b) => b.emissions - a.emissions,
+  )[0];
   const maxScope = summary.mostEmittedScope.scope;
 
   // 전문가의 견해를 담은 프롬프트 기반 응답 시뮬레이션
@@ -238,15 +241,17 @@ Implementing these measures is expected to reduce next quarter's emissions by **
 /**
  * 특정 기업의 가장 최근 AI 인사이트 리포트를 가져옵니다.
  */
-export async function fetchLatestAIInsight(companyId: string): Promise<Post | null> {
+export async function fetchLatestAIInsight(
+  companyId: string,
+): Promise<Post | null> {
   await delay(jitter());
   const companyPosts = posts.filter(
-    (p) => p.resourceUid === companyId && p.title.includes("AI")
+    (p) => p.resourceUid === companyId && p.title.includes("AI"),
   );
   if (companyPosts.length === 0) return null;
 
   // 날짜 역순 정렬 후 가장 최근 것 반환
   return companyPosts.sort(
-    (a, b) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
+    (a, b) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime(),
   )[0];
 }

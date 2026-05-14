@@ -35,7 +35,7 @@ export function simulatePCFBreakdown(
   language: Language = "ko",
 ): PCFData[] {
   const t = translations[language];
-  
+
   const s1 = scopeBreakdown["Scope 1"] || 0;
   const s2 = scopeBreakdown["Scope 2"] || 0;
   const s3 = scopeBreakdown["Scope 3"] || 0;
@@ -45,13 +45,17 @@ export function simulatePCFBreakdown(
   // Scope 3 비중이 높을수록 원재료 단계 상승
   const rawRatio = parseFloat((0.15 + (s3 / total) * 0.3).toFixed(3));
   // Scope 2와 Scope 1 비중이 높을수록 제조 단계 상승
-  const manRatio = parseFloat((0.25 + (s2 / total) * 0.2 + (s1 / total) * 0.1).toFixed(3));
+  const manRatio = parseFloat(
+    (0.25 + (s2 / total) * 0.2 + (s1 / total) * 0.1).toFixed(3),
+  );
   // Scope 1 비중이 높을수록 유통 단계 상승
   const distRatio = parseFloat((0.05 + (s1 / total) * 0.2).toFixed(3));
   // 사용 단계는 비교적 고정적
   const useRatio = 0.1;
   // 나머지는 폐기 단계
-  const dispRatio = parseFloat((1 - (rawRatio + manRatio + distRatio + useRatio)).toFixed(3));
+  const dispRatio = parseFloat(
+    (1 - (rawRatio + manRatio + distRatio + useRatio)).toFixed(3),
+  );
 
   const stages: { stage: string; ratio: number }[] = [
     { stage: t.pcfStages.rawMaterial, ratio: rawRatio },
@@ -64,7 +68,7 @@ export function simulatePCFBreakdown(
   // 총합이 정확히 100%가 되도록 보정 (부동소수점 오차 방지)
   const currentTotalRatio = stages.reduce((acc, s) => acc + s.ratio, 0);
   if (currentTotalRatio !== 1) {
-    stages[1].ratio += (1 - currentTotalRatio);
+    stages[1].ratio += 1 - currentTotalRatio;
   }
 
   return stages.map(({ stage, ratio }) => ({
@@ -111,23 +115,34 @@ export function calculateMonthlyTrends(
 export function summarizeEmissions(
   emissions: GhgEmission[],
   language: Language = "ko",
-  targetMonth?: string
+  targetMonth?: string,
 ) {
   const monthlyTrends = calculateMonthlyTrends(emissions);
-  
+
   // 타겟 월 결정
-  const selectedMonth = targetMonth || (monthlyTrends.length > 0 ? monthlyTrends[monthlyTrends.length - 1].month : "");
-  
+  const selectedMonth =
+    targetMonth ||
+    (monthlyTrends.length > 0
+      ? monthlyTrends[monthlyTrends.length - 1].month
+      : "");
+
   // 전체 데이터 중 해당 월 데이터만 추출
-  const currentMonthData = emissions.filter(e => e.yearMonth === selectedMonth);
+  const currentMonthData = emissions.filter(
+    (e) => e.yearMonth === selectedMonth,
+  );
   const currentTotal = calculateTotalEmissions(currentMonthData);
 
   // 증감률 계산 (선택 월 vs 전월)
-  const currentIndex = monthlyTrends.findIndex(t => t.month === selectedMonth);
+  const currentIndex = monthlyTrends.findIndex(
+    (t) => t.month === selectedMonth,
+  );
   let growthRate = 0;
   if (currentIndex > 0) {
     const previousTotal = monthlyTrends[currentIndex - 1].emissions;
-    growthRate = previousTotal > 0 ? ((currentTotal - previousTotal) / previousTotal) * 100 : 0;
+    growthRate =
+      previousTotal > 0
+        ? ((currentTotal - previousTotal) / previousTotal) * 100
+        : 0;
   }
 
   // Scope 및 배출원(Source) 분석
@@ -141,30 +156,42 @@ export function summarizeEmissions(
   currentMonthData.forEach((item) => {
     const scope = classifyScope(item.source);
     scopeBreakdown[scope] += item.emissions;
-    sourceBreakdown[item.source] = (sourceBreakdown[item.source] || 0) + item.emissions;
+    sourceBreakdown[item.source] =
+      (sourceBreakdown[item.source] || 0) + item.emissions;
   });
 
   // 가장 배출량이 높은 Scope 찾기
   let mostEmittedScope: Scope = "Scope 1";
   let maxScopeValue = -1;
-  (Object.entries(scopeBreakdown) as [Scope, number][]).forEach(([scope, val]) => {
-    if (val > maxScopeValue) {
-      maxScopeValue = val;
-      mostEmittedScope = scope;
-    }
-  });
+  (Object.entries(scopeBreakdown) as [Scope, number][]).forEach(
+    ([scope, val]) => {
+      if (val > maxScopeValue) {
+        maxScopeValue = val;
+        mostEmittedScope = scope;
+      }
+    },
+  );
 
   // 해당 Scope 내에서 가장 많이 배출된 Source 찾기
-  const scopeSources = currentMonthData.filter(e => classifyScope(e.source) === mostEmittedScope);
+  const scopeSources = currentMonthData.filter(
+    (e) => classifyScope(e.source) === mostEmittedScope,
+  );
   const sourceTotals: Record<string, number> = {};
-  scopeSources.forEach(s => {
+  scopeSources.forEach((s) => {
     sourceTotals[s.source] = (sourceTotals[s.source] || 0) + s.emissions;
   });
-  const topSource = Object.entries(sourceTotals).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
+  const topSource =
+    Object.entries(sourceTotals).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
 
   // PCF 분석 시뮬레이션 (동적 로직 적용)
-  const pcfSimulation = simulatePCFBreakdown(currentTotal, scopeBreakdown, language);
-  const topStage = [...pcfSimulation].sort((a, b) => b.emissions - a.emissions)[0]?.stage || "N/A";
+  const pcfSimulation = simulatePCFBreakdown(
+    currentTotal,
+    scopeBreakdown,
+    language,
+  );
+  const topStage =
+    [...pcfSimulation].sort((a, b) => b.emissions - a.emissions)[0]?.stage ||
+    "N/A";
 
   return {
     selectedMonth,

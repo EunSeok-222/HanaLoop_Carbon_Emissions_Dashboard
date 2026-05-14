@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { fetchCompanies, updateCompany } from '@/lib/api';
 import { Company, GhgEmission } from '@/lib/types';
 import { useDashboardStore } from '@/hooks/use-dashboard-store';
@@ -40,14 +40,14 @@ export default function CompaniesPage() {
   const [editingCompany, setEditingCompany] = useState<Company | null>(null);
   const [editName, setEditName] = useState('');
   const [editCountry, setEditCountry] = useState('');
-  
+
   // Emissions Manage Modal State
   const [managingEmissionsCompany, setManagingEmissionsCompany] = useState<Company | null>(null);
   const [editEmissions, setEditEmissions] = useState<GhgEmission[]>([]);
-  
+
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const loadCompanies = async () => {
+  const loadCompanies = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await fetchCompanies();
@@ -58,11 +58,11 @@ export default function CompaniesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t.errorTitle]);
 
   useEffect(() => {
     loadCompanies();
-  }, []);
+  }, [loadCompanies]);
 
   const handleEditClick = (company: Company) => {
     setEditingCompany(company);
@@ -134,7 +134,7 @@ export default function CompaniesPage() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t.companyManagementTitle}</h1>
@@ -159,7 +159,7 @@ export default function CompaniesPage() {
       )}
 
       <Card className="border-none shadow-xl ring-1 ring-border/50 overflow-hidden">
-        <CardHeader className="bg-slate-50/50 border-b">
+        <CardHeader className="bg-slate-50/50 border-b p-4 md:p-6">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
             <Building2 className="h-5 w-5 text-emerald-600" />
             {t.companies}
@@ -173,12 +173,12 @@ export default function CompaniesPage() {
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-muted-foreground uppercase bg-slate-50/30 border-b">
                 <tr>
-                  <th className="px-6 py-4 font-medium">{t.companyName}</th>
-                  <th className="px-6 py-4 font-medium">{t.country}</th>
-                  <th className="px-6 py-4 font-medium text-right">{t.actions}</th>
+                  <th scope="col" className="px-4 md:px-6 py-4 font-semibold">{t.companyName}</th>
+                  <th scope="col" className="px-4 md:px-6 py-4 font-semibold">{t.country}</th>
+                  <th scope="col" className="px-4 md:px-6 py-4 text-right font-semibold">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-border/50">
                 {isLoading ? (
                   <tr>
                     <td colSpan={3} className="px-6 py-10 text-center text-muted-foreground">
@@ -196,37 +196,37 @@ export default function CompaniesPage() {
                   </tr>
                 ) : (
                   companies.map((company) => (
-                    <tr key={company.id} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-6 py-4">
+                    <tr key={company.id} className="group hover:bg-slate-50/50 transition-colors">
+                      <td className="px-4 md:px-6 py-4 font-medium text-slate-900">
                         <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
-                            {company.name.charAt(0)}
+                          <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg shadow-inner">
+                            {company.name[0]}
                           </div>
-                          <span className="font-semibold text-slate-900">{company.name}</span>
+                          <span className="group-hover:text-emerald-600 transition-colors font-semibold">{company.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-2 text-slate-600 w-16">
+                      <td className="px-4 md:px-6 py-4 text-muted-foreground">
+                        <div className="flex items-center gap-2 md:gap-4">
+                          <div className="flex items-center gap-2 text-slate-600 min-w-fit">
                             <Globe2 className="h-4 w-4" />
                             {company.country}
                           </div>
-                          <Button 
-                            variant="outline" 
-                            size="xs" 
-                            className="h-7 text-xs border-emerald-200 text-emerald-700 hover:bg-emerald-50 gap-1.5 shadow-sm"
+                          <Button
+                            variant="outline"
+                            size="xs"
+                            className="h-7 px-2 text-xs border-emerald-200 text-emerald-700 hover:bg-emerald-50 gap-1.5 shadow-sm"
                             onClick={() => handleManageEmissionsClick(company)}
                           >
                             <BarChart3 className="h-3.5 w-3.5" />
-                            {t.monthlyEmissions}
+                            <span className="hidden sm:inline">{t.monthlyEmissions}</span>
                           </Button>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity"
+                      <td className="px-4 md:px-6 py-4 text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="hover:bg-slate-100 transition-opacity"
                           onClick={() => handleEditClick(company)}
                         >
                           <Edit2 className="h-4 w-4 mr-2" />
@@ -254,18 +254,18 @@ export default function CompaniesPage() {
           <DialogContent className="p-6 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="companyName">{t.companyName}</Label>
-              <Input 
-                id="companyName" 
-                value={editName} 
+              <Input
+                id="companyName"
+                value={editName}
                 onChange={(e) => setEditName(e.target.value)}
                 placeholder="Enter company name"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="country">{t.country}</Label>
-              <Input 
-                id="country" 
-                value={editCountry} 
+              <Input
+                id="country"
+                value={editCountry}
                 onChange={(e) => setEditCountry(e.target.value)}
                 placeholder="Enter country code (e.g. KR, US)"
               />
@@ -303,7 +303,7 @@ export default function CompaniesPage() {
                 {t.addEntry}
               </Button>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto">
               <table className="w-full text-sm text-left">
                 <thead className="sticky top-0 bg-white border-b text-xs text-muted-foreground uppercase z-10">
@@ -330,7 +330,7 @@ export default function CompaniesPage() {
                           <td className="px-6 py-2">
                             <div className="relative">
                               <Calendar className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input 
+                              <Input
                                 type="month"
                                 value={item.yearMonth}
                                 onChange={(e) => handleEmissionChange(idx, 'yearMonth', e.target.value)}
@@ -339,8 +339,8 @@ export default function CompaniesPage() {
                             </div>
                           </td>
                           <td className="px-6 py-2">
-                            <Select 
-                              value={item.source} 
+                            <Select
+                              value={item.source}
                               onValueChange={(val) => handleEmissionChange(idx, 'source', val)}
                             >
                               <SelectTrigger className="h-9 w-full bg-transparent border-none focus:ring-1">
@@ -356,7 +356,7 @@ export default function CompaniesPage() {
                             </Select>
                           </td>
                           <td className="px-6 py-2">
-                            <Input 
+                            <Input
                               type="number"
                               value={item.emissions}
                               onChange={(e) => handleEmissionChange(idx, 'emissions', parseFloat(e.target.value) || 0)}
@@ -367,16 +367,16 @@ export default function CompaniesPage() {
                             <span className={cn(
                               "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider",
                               currentScope === 'Scope 1' ? "bg-amber-100 text-amber-700" :
-                              currentScope === 'Scope 2' ? "bg-blue-100 text-blue-700" :
-                              "bg-emerald-100 text-emerald-700"
+                                currentScope === 'Scope 2' ? "bg-blue-100 text-blue-700" :
+                                  "bg-emerald-100 text-emerald-700"
                             )}>
                               {currentScope}
                             </span>
                           </td>
                           <td className="px-6 py-2 text-right">
-                            <Button 
-                              variant="ghost" 
-                              size="icon" 
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors"
                               onClick={() => handleRemoveEmission(idx)}
                             >
