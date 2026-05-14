@@ -41,6 +41,31 @@ export const translations = {
     currencyTitle: "표시 통화 (준비 중)",
     currencyDesc: "탄소 비용 계산에 사용될 통화를 선택합니다.",
     comingSoon: "이 기능은 향후 업데이트에서 제공될 예정입니다.",
+
+    // Company Management
+    companyManagementTitle: "기업 관리",
+    companyManagementDesc: "등록된 기업 정보를 확인하고 수정합니다.",
+    companyName: "기업명",
+    country: "국가",
+    actions: "관리",
+    edit: "수정",
+    save: "저장",
+    cancel: "취소",
+    updateSuccess: "기업 정보가 성공적으로 업데이트되었습니다.",
+    updateError: "기업 정보 업데이트 중 오류가 발생했습니다.",
+    
+    // Emissions Management
+    emissionsData: "배출량 데이터",
+    basicInfo: "기본 정보",
+    monthlyEmissions: "월별 배출 내역",
+    month: "연월",
+    source: "배출원",
+    amount: "배출량 (tCO2eq)",
+    scope: "스코프",
+    addEntry: "내역 추가",
+    delete: "삭제",
+    noEmissions: "등록된 배출 내역이 없습니다.",
+    manageEmissions: "배출 내역 관리",
   },
   en: {
     // General
@@ -84,6 +109,31 @@ export const translations = {
     currencyTitle: "Currency (Coming Soon)",
     currencyDesc: "Select the currency for carbon cost calculation.",
     comingSoon: "This feature will be available in a future update.",
+
+    // Company Management
+    companyManagementTitle: "Company Management",
+    companyManagementDesc: "View and edit registered company information.",
+    companyName: "Company Name",
+    country: "Country",
+    actions: "Actions",
+    edit: "Edit",
+    save: "Save",
+    cancel: "Cancel",
+    updateSuccess: "Company information updated successfully.",
+    updateError: "An error occurred while updating company information.",
+
+    // Emissions Management
+    emissionsData: "Emissions Data",
+    basicInfo: "Basic Info",
+    monthlyEmissions: "Monthly Emissions",
+    month: "Month",
+    source: "Source",
+    amount: "Amount (tCO2eq)",
+    scope: "Scope",
+    addEntry: "Add Entry",
+    delete: "Delete",
+    noEmissions: "No emission entries found.",
+    manageEmissions: "Manage Emissions",
   }
 };
 

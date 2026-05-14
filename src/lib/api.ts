@@ -11,7 +11,7 @@ const jitter = () => 200 + Math.random() * 600; // 200ms ~ 800ms
 const maybeFail = () => Math.random() < 0.15; // 15% failure rate
 
 // --- Mock Data ---
-const companies: Company[] = [
+let companies: Company[] = [
   {
     id: "c1",
     name: "Acme Corp",
@@ -82,6 +82,21 @@ export async function fetchCompanies(): Promise<Company[]> {
   if (maybeFail())
     throw new Error("기업 데이터를 불러오는 중 네트워크 오류가 발생했습니다.");
   return [...companies];
+}
+
+export async function updateCompany(
+  id: string,
+  data: Partial<Pick<Company, "name" | "country" | "emissions">>
+): Promise<Company> {
+  await delay(jitter());
+  if (maybeFail())
+    throw new Error("기업 정보를 수정하는 중 네트워크 오류가 발생했습니다.");
+
+  const index = companies.findIndex((c) => c.id === id);
+  if (index === -1) throw new Error("해당 기업을 찾을 수 없습니다.");
+
+  companies[index] = { ...companies[index], ...data };
+  return companies[index];
 }
 
 export async function fetchPosts(): Promise<Post[]> {
