@@ -67,14 +67,6 @@ let posts: Post[] = [
   },
 ];
 
-const pcfData: PCFData[] = [
-  { stage: "Raw Material", emissions: 450, percentage: 35 },
-  { stage: "Manufacturing", emissions: 380, percentage: 30 },
-  { stage: "Distribution", emissions: 150, percentage: 12 },
-  { stage: "Use", emissions: 200, percentage: 15 },
-  { stage: "Disposal", emissions: 100, percentage: 8 },
-];
-
 // --- API Functions ---
 
 export async function fetchCompanies(): Promise<Company[]> {
@@ -157,9 +149,10 @@ export async function fetchDashboardAnalytics(companyId?: string) {
       growthRate: summary.growthRate,
       mostEmittedScope: summary.mostEmittedScope,
       scopeBreakdown: summary.scopeBreakdown,
+      estimatedCarbonTax: summary.estimatedCarbonTax,
     },
     monthlyTrends: summary.monthlyTrends,
-    pcfBreakdown: pcfData,
+    pcfBreakdown: summary.pcfSimulation,
     companies: filteredCompanies.map((c) => ({ id: c.id, name: c.name })),
   };
 }

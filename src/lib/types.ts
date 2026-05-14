@@ -51,6 +51,7 @@ export interface DashboardSummary {
   growthRate: number;
   mostEmittedScope: { scope: Scope; value: number };
   scopeBreakdown: Record<Scope, number>;
+  estimatedCarbonTax: number;
 }
 
 export interface DashboardAnalytics {
