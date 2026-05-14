@@ -8,11 +8,12 @@ import {
   FileText,
   Settings,
   LogOut,
-  Leaf
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useDashboardStore } from '@/hooks/use-dashboard-store';
 import { translations } from '@/lib/translations';
+import hanaloopLogo from '../../../src/app/favicon.ico';
+import Image from 'next/image';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -31,8 +32,8 @@ export default function Sidebar() {
       <div className="flex h-full flex-col px-3 py-4">
         {/* Logo */}
         <Link href="/" className="mb-10 flex items-center pl-2.5">
-          <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
-            <Leaf size={20} />
+          <div className="mr-3 flex h-8 w-8 items-center justify-center text-white">
+            <Image src={hanaloopLogo} alt="favicon.ico" width={48} height={48} />
           </div>
           <span className="self-center whitespace-nowrap text-xl font-bold tracking-tight text-foreground">
             HanaLoop
