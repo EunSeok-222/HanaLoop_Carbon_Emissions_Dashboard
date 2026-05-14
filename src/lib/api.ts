@@ -200,3 +200,18 @@ Currently, **${summary.mostEmittedScope.scope}** is the primary emission source 
 Implementing these measures is expected to reduce next quarter's emissions by **over 10%**.`;
   }
 }
+/**
+ * 특정 기업의 가장 최근 AI 인사이트 리포트를 가져옵니다.
+ */
+export async function fetchLatestAIInsight(companyId: string): Promise<Post | null> {
+  await delay(jitter());
+  const companyPosts = posts.filter(
+    (p) => p.resourceUid === companyId && p.title.includes("AI")
+  );
+  if (companyPosts.length === 0) return null;
+
+  // 날짜 역순 정렬 후 가장 최근 것 반환
+  return companyPosts.sort(
+    (a, b) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
+  )[0];
+}

@@ -133,7 +133,7 @@ export default function DashboardPage() {
 
           {/* AI Insights Section */}
           <section className="animate-in fade-in slide-in-from-bottom-5 duration-600 delay-100 fill-mode-both">
-            <AIInsights data={dashboardData} />
+            <AIInsights data={dashboardData} companyId={selectedCompany} />
           </section>
         </>
       )}

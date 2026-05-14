@@ -81,6 +81,10 @@ export const translations = {
     aiInsightLoading: "AI가 전문가 의견을 분석 중입니다...",
     aiInsightError: "인사이트를 가져오는 중 오류가 발생했습니다.",
     aiInsightExpertName: "HanaLoop AI 환경 컨설턴트",
+    saveToReport: "리포트에 저장",
+    saveSuccess: "인사이트가 리포트에 성공적으로 저장되었습니다.",
+    saveError: "리포트 저장 중 오류가 발생했습니다.",
+    aiReportTitle: "AI 탄소 감축 전략 보고서",
   },
   en: {
     // General
@@ -164,6 +168,10 @@ export const translations = {
     aiInsightLoading: "AI is analyzing expert opinions...",
     aiInsightError: "An error occurred while fetching insights.",
     aiInsightExpertName: "HanaLoop AI Sustainability Consultant",
+    saveToReport: "Save to Report",
+    saveSuccess: "Insight successfully saved to reports.",
+    saveError: "Error occurred while saving to report.",
+    aiReportTitle: "AI Carbon Reduction Strategy Report",
   }
 };
 
