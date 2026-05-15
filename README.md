@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HanaLoop Carbon Emissions Dashboard
+(주)하나루프 프론트엔드 개발자 채용 과제로 제작된 **탄소 배출량 관리 및 분석 대시보드**입니다. 기업 관리자가 자사 및 계열사의 배출 데이터를 직관적으로 파악하고, 기후 변화 대응 전략을 수립할 수 있도록 돕습니다.
+## 배포주소 https://hanaloopcarbon.vercel.app/
+## 주요 기능
+### 1. 실시간 탄소 배출 모니터링
+- **전사 및 기업별 필터링**: 전체 계열사 또는 특정 기업의 데이터를 선택하여 조회할 수 있습니다.
+- **월별 배출 트렌드**: Chart.js를 활용하여 기간별 배출량 변화를 시각화했습니다. 차트의 포인트를 클릭하여 해당 월의 상세 데이터를 확인할 수 있습니다.
+- **GHG Scope 분류**: 배출원 정보를 바탕으로 Scope 1, 2, 3를 자동 분류하여 비중을 분석합니다.
+### 2. 탄소세 예측 및 경제적 영향 분석
+- **예상 탄소세 계산**: 현재 배출량을 바탕으로 향후 지불해야 할 탄소세를 예측합니다. (톤당 30,000원 가정)
+- **전월 대비 증감률**: 데이터 기반의 증감률을 계산하여 관리자에게 경고 또는 안심 메시지를 전달합니다.
+### 3. AI 기반 탄소 관리 인사이트 (Creative Extension)
+- **Gemini API 연동**: 실제 배출 데이터를 기반으로 AI가 3~4가지의 핵심 전략을 제안합니다.
+- **PCF(제품 탄소 발자국) 시뮬레이션**: 단순 배출량을 넘어 제품의 생애주기(원재료, 제조, 유통 등)별 배출 비중을 동적으로 예측하여 시각화합니다.
+### 4. 견고한 사용자 경험 (UX)
+- **가상 백엔드 대응**: 네트워크 지연(200~800ms) 및 간헐적 오류(15%) 상황을 처리하기 위한 Skeleton Screen과 에러 복구(Retry) 로직을 구현했습니다.
+- **반응형 레이아웃**: 데스크톱의 사이드바 Drawer와 모바일의 하단 내비게이션 바를 통해 모든 환경에서 최적의 접근성을 제공합니다.
+## 기술 스택
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Shadcn/ui 
+- **State Management**: Zustand (언어 설정 및 UI 상태 관리)
+- **Visualization**: Chart.js, React-Chartjs-2
+- **AI Integration**: Google Gemini SDK
+## 설계 결정 및 아키텍처
+- **도메인 로직 분리**: 탄소세 계산, Scope 분류, PCF 시뮬레이션 로직을 `src/utils/carbonCalculator.ts`로 모듈화하여 순수 함수로 관리했습니다.
+- **서버/클라이언트 컴포넌트 최적화**: SEO와 초기 로딩 속도를 고려하여 구조를 배치하고, 상호작용이 필요한 부분은 클라이언트 컴포넌트로 분리했습니다.
+- **다국어 지원**: 한국어와 영어를 지원하며, Context 없이 Zustand를 통해 효율적으로 언어 상태를 전역 관리합니다.
+## 가정한 사항 및 비판적 사고
+- **데이터 무결성**: 가상 API에서 에러가 발생할 경우, 단순히 빈 화면을 보여주는 대신 사용자에게 명확한 에러 메시지와 재시도 버튼을 제공하도록 설계했습니다.
+- **탄소세 단가**: 현재 국내외 탄소 가격 트렌드를 반영하여 톤당 30,000원을 기본값으로 설정했으나, 향후 설정에서 변경 가능하도록 확장성을 고려했습니다.
+- **데이터 시뮬레이션**: 제공된 스텁 코드 외에도 PCF 분석과 같은 고도화된 통계가 관리자에게 더 큰 가치를 줄 것이라 판단하여 추가 로직을 구현했습니다.
+- **데이터 확장 및 도메인 로직 고도화**
+  - **문제 인식**: 제공된 샘플 데이터(3개월 분량)만으로는 대시보드의 핵심인 '월별 추이 분석' 및 '증감률 계산' 기능을 시각적으로 충분히 전달하기 어렵다고 판단했습니다.
+  - **해결 방안**: 
+   - **시계열 확장**: 2024년 1월부터 6월까지로 데이터를 확장하여 유의미한 트렌드 차트를 구현했습니다.
+   - **배출원 다양화**: Scope 분류 로직을 명확히 보여주기 위해 전기(Scope 2), LNG(Scope 1), 가솔린(Scope 1), 스팀(Scope 2) 등 다양한 배출원을 추가했습니다.
+   - **로컬 스토리지 연동**: 확장된 데이터는 LocalStorage에 저장 및 동기화되어, 새로고침 후에도 유지되도록 설계했습니다.
 
-## Getting Started
-
-First, run the development server:
-
+## 작업 소요 시간
+- **기획 및 아키텍처 설계**: 2시간
+- **핵심 UI 및 컴포넌트 개발**: 6시간
+- **데이터 시뮬레이션 및 차트 연동**: 2시간
+- **AI 인사이트 및 다국어 처리**: 2시간
+- **총 소요 시간**: 약 12시간
+## 실행 방법
 ```bash
+# 의존성 설치
+npm install
+# 환경 변수 설정 (.env.local)
+# GEMINI_API_KEY=your_api_key_here
+# 개발 서버 실행
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
